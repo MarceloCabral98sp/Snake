@@ -1,8 +1,11 @@
-let canvas = document.getElementById("snake"); //criar elemento que irá rodar o jogo
+let canvas = document.getElementById("stage"); //criar elemento que irá rodar o jogo
 let context = canvas.getContext("2d"); //....
 let box = 32;
 
 let snake = []; 
+
+
+// posição de partida da cobrinha
 snake[0] = {
     x: 8 * box,
     y: 8 * box
@@ -15,7 +18,7 @@ let food = {
 //inicia o canvas
 function criarBG(){
     context.fillStyle = "lightgreen";
-    context.fillRect(0, 0, 16 * box, 16 * box); // desenha o retangulo onde ocorrera o jogo
+    context.fillRect(0, 0, canvas.width, canvas.height); // desenha o retangulo onde ocorrera o jogo
 }
 //criar cobrinha
 function criarCobrinha(){
@@ -33,50 +36,52 @@ function drawFood(){
 document.addEventListener("keydown", update);
 
 function update(event){
-
-    if(event.keyCode == 37 && direction != "right"){
+    
+    // impede que a cobrinha volte a direção contrária no teclado
+    if(event.keyCode == 65 && direction != "right"){
         direction = "left";
     }
-    else if(event.keyCode == 38 && direction != "down"){
+    else if(event.keyCode == 87 && direction != "down"){
         direction = "up";
     }
-    else if(event.keyCode == 39 && direction != "left"){
+    else if(event.keyCode == 68 && direction != "left"){
         direction = "right";
     }
-    else if(event.keyCode == 40 && direction != "up"){
+    else if(event.keyCode == 83 && direction != "up"){
         direction = "down";
     }
 }
 
 function iniciarJogo(){
-
+    
+    criarBG();
+    criarCobrinha();
+    drawFood();
+    
     // a posição snake 0 é a cabeça da cobrinha
-    if(snake[0].x > 15 * box && direction == "right"){
+    if(snake[0].x > 16 * box && direction == "right"){
         snake[0].x = 0;
     }
     else if(snake[0].x < 0 && direction == "left"){
         snake[0].x = 16 * box;
     }
-    if(snake[0].y > 15 * box && direction == "down"){
+    else if(snake[0].y > 16 * box && direction == "down"){
         snake[0].y = 0;
     }
     else if(snake[0].y < 0 && direction == "up"){
         snake[0].y = 16 * box;
     }
-
+    
     for(i = 1; i < snake.length; i++){
         if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
             clearInterval(jogo);
-            alert('Game Over :(');
+            alert('Game Over :( \nRecarregue a página para jogar novamente');
         }
     }
-    criarBG();
-    criarCobrinha();
-    drawFood();
-
+    
     let snakeX = snake[0].x; 
     let snakeY = snake[0].y;
-
+    
     if(direction == "right"){
         snakeX += box;
     }
@@ -89,7 +94,7 @@ function iniciarJogo(){
     else if(direction == "down"){
         snakeY += box;
     }
-
+    
     if(snakeX != food.x || snakeY != food.y){
         snake.pop();
     }
@@ -97,8 +102,8 @@ function iniciarJogo(){
         food.x = Math.floor(Math.random() * 15 + 1) * box,
         food.y = Math.floor(Math.random() * 15 + 1) * box
     }
-
-
+    
+    
     let newHead = {
         x: snakeX,
         y: snakeY
@@ -107,4 +112,4 @@ function iniciarJogo(){
 }
 
 // a cada 100 milisegundos a função iniciar jogo é chamada novamente
-let jogo = setInterval(iniciarJogo, 100);
+let jogo = setInterval(iniciarJogo, 80);
